@@ -1,6 +1,12 @@
 package dev.engel.leetcode.kotlin
 
-class LRUCache(private val capacity: Int) {
+abstract class LRUCache(protected val capacity: Int) {
+    abstract fun get(key: Int): Int
+
+    abstract fun put(key: Int, value: Int)
+}
+
+class RegularLRUCache(capacity: Int) : LRUCache(capacity) {
 
     private val lookup = HashMap<Int, Node>()
     private val doublyLinkedList = DoublyLinkedList()
@@ -9,7 +15,7 @@ class LRUCache(private val capacity: Int) {
     /**
      * Retrieves an item from the cache. If the item does not exist, this will return -1.
      */
-    fun get(key: Int): Int {
+    override fun get(key: Int): Int {
         val node = lookup[key] ?: return -1
 
         moveToFront(node)
@@ -20,7 +26,7 @@ class LRUCache(private val capacity: Int) {
      * Adds an item to the list using the [key]. If an item already exists with that [key] then the value will be
      * updated.
      */
-    fun put(key: Int, value: Int) {
+    override fun put(key: Int, value: Int) {
         val node = lookup[key]
 
         if (node == null) {
@@ -105,4 +111,25 @@ class LRUCache(private val capacity: Int) {
         var previous: Node? = null,
         var next: Node? = null
     )
+}
+
+class LinkedHashMapLRUCache(capacity: Int) : LRUCache(capacity) {
+     private val cache = mutableMapOf<Int, Int>()
+
+     override fun get(key: Int): Int {
+         val value = cache[key] ?: return -1
+         cache.remove(key)
+         cache[key] = value
+         return value
+     }
+
+     override fun put(key: Int, value: Int) {
+         if (cache.containsKey(key)) {
+             cache.remove(key)
+         }
+         cache[key] = value
+         if(cache.size > capacity) {
+             cache.remove(cache.keys.first())
+         }
+     }
 }

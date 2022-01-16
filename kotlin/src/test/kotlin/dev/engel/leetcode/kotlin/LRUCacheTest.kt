@@ -2,13 +2,15 @@ package dev.engel.leetcode.kotlin
 
 import dev.engel.leetcode.kotlin.testcommons.generateInts
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import strikt.api.expect
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
 
-internal class LRUCacheTest {
+internal abstract class LRUCacheTest<T : LRUCache> {
 
-    private fun createSubject(capacity: Int) = LRUCache(capacity)
+    protected abstract fun createSubject(capacity: Int): T
 
     @Test
     fun `given an lru cache with a capacity of 3 when 4 items are added in a row then the first item should be removed`() {
@@ -71,4 +73,12 @@ internal class LRUCacheTest {
             }
         }
     }
+}
+
+internal class RegularLRUCacheTest : LRUCacheTest<RegularLRUCache>() {
+    override fun createSubject(capacity: Int) = RegularLRUCache(capacity)
+}
+
+internal class LinkedHashMapLRUCacheTest : LRUCacheTest<LinkedHashMapLRUCache>() {
+    override fun createSubject(capacity: Int) = LinkedHashMapLRUCache(capacity)
 }

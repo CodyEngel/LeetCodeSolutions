@@ -10,7 +10,7 @@ on:
       - .github/workflows/kotlin-lint.yml
 
 jobs:
-  detekt:
+  unit-test:
     runs-on: ubuntu-latest
 
     steps:
