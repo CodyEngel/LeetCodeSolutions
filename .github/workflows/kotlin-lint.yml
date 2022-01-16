@@ -1,0 +1,25 @@
+name: Kotlin Lint
+defaults:
+  run:
+    working-directory: kotlin
+
+on:
+  push:
+    paths:
+      - kotlin/**
+      - .github/workflows/kotlin-lint.yml
+
+jobs:
+  detekt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set Up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: "17"
+          distribution: "microsoft"
+          cache: gradle
+      - name: Run Detekt
+        run: ./gradlew detekt --no-daemon
